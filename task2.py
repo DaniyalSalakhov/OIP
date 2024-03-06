@@ -1,13 +1,13 @@
 from bs4 import BeautifulSoup
 import re
 import os
-import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import pymorphy2
+import nltk
 
-nltk.download('punkt')
 nltk.download('stopwords')
+nltk.download('punkt')
 
 # Очистка токена от непечатаемых символов и спецсимволов
 def clean_token(token):
@@ -41,7 +41,7 @@ def get_tokens(directory, stop_words):
         all_tokens.extend(tokens)
     return set(all_tokens)  # Удаление дубликатов
 
-tokens = get_tokens('downloaded_pages', stop_words)
+tokens = get_tokens('content/downloaded_pages', stop_words)
 with open('content/tokens.txt', 'w') as token_file:
   for token in tokens:
     token_file.write(token +'\n')
