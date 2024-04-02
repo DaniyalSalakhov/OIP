@@ -9,9 +9,9 @@ morph_tagger = NewsMorphTagger(emb)
 REMOVE_MORPH = ['ADJ', 'NOUN', 'PRON', 'VERB']
 
 
-class Search_system:
-    index_file_name = "index.txt"
-    lemmas_tf_idf_files_folder = "content/lemmas_tokens/"
+class Searcher:
+    indexes = "index.txt"
+    lemmas_dir = "content/lemmas_tokens/"
 
     def __init__(self):
         self.segmenter = Segmenter()
@@ -23,7 +23,7 @@ class Search_system:
 
         # подгружаем леммы
         for i in range(0, 100):
-            with open(self.lemmas_tf_idf_files_folder + "lemmas" + str(i) + ".txt", 'r', encoding="utf-8") as f:
+            with open(self.lemmas_dir + "lemmas" + str(i) + ".txt", 'r', encoding="utf-8") as f:
                 self.lemmas_tfidf.append({})
                 lines = f.readlines()
                 for line in lines:
@@ -33,7 +33,7 @@ class Search_system:
         self.index_to_links = {}
 
         # подгружаем ссылки
-        with open(self.index_file_name, 'r', encoding="utf-8") as f:
+        with open(self.indexes, 'r', encoding="utf-8") as f:
             lines = f.readlines()
             for line in lines:
                 arr = line.split(' ')
@@ -53,7 +53,7 @@ class Search_system:
                 token.lemmatize(morph_vocab)
                 search_request.append(token.lemma.lower())
 
-        # reset input words by lemmas
+        # сброс входных слов по леммам
         unique_lemmas = {}
         total_lemmas = 0
         for i in range(0, len(search_request)):
@@ -68,12 +68,12 @@ class Search_system:
             unique_lemmas[lemma] += 1
             total_lemmas += 1
 
-        # get tf-idf for input
+        # tf-idf
         search_request_tf = {}
         for key in unique_lemmas.keys():
             search_request_tf[key] = unique_lemmas[key] / total_lemmas
 
-        # vector search
+        # вектор
         results = {}
         for i in range(0, 100):
             cur_file_lemmas = self.lemmas_tfidf[i]
@@ -96,7 +96,7 @@ class Search_system:
 if __name__ == '__main__':
 
     while True:
-        searcher = Search_system()
+        searcher = Searcher()
         user_input = input("Введите запрос:\n")
         try:
             print(searcher.search(user_input))

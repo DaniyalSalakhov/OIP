@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from task5 import Search_system
+from task5 import Searcher
 app = Flask(__name__)
 
 
@@ -7,7 +7,7 @@ app = Flask(__name__)
 def index():
     if request.method == 'POST':
         input_value = request.form['input_value']
-        search = Search_system()
+        search = Searcher()
         links = search.search(input_value)[:10]
         return render_template('output.html', input_value=input_value, result=links)
     else:
